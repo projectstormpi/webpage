@@ -78,3 +78,17 @@ $(document).ready(function () {
         ele.append(arrow);
     }
 });
+
+/*
+var prevScrollpos = window.pageYOffset;
+window.onscroll = function () {
+    var currentScrollPos = window.pageYOffset;
+    if (prevScrollpos > currentScrollPos) {
+        document.getElementById("menuheading").style.top = "-100";
+    } else {
+        document.getElementById("menuheading").style.top = "0px";
+    }
+    prevScrollpos = currentScrollPos;
+}*/
+
+

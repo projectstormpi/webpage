@@ -41,9 +41,10 @@
 
     <script src="js/js1.js"></script>
 
+
 </head>
 
-<body>
+<body class="animatebody fadeIn">
 
 <div id="layout">
     <!-- Menu toggle -->
@@ -53,15 +54,18 @@
     </a>
 
     <div id="menu">
-        <div class="pure-menu">
-            <a class="pure-menu-heading" href="#readings">Storm Pi</a>
+        <div class="pure-menu" id="menuheading">
+            <a class="pure-menu-heading" href="#layout">
+                <!--<img src="img/logo.png" height="100" width="100">-->
+                <h3 style="">Storm Pi</h3>
+            </a>
 
             <ul class="pure-menu-list">
                 <li class="pure-menu-item">
-                    <a href="#readings" class="pure-menu-link">Readings</a>
+                    <a href="#welcome-slide" class="pure-menu-link">Readings</a>
                 </li>
                 <li class="pure-menu-item menu-item-divided">
-                    <a href="#sensorstatus" class="pure-menu-link">Sensoren</a>
+                    <a href="#sensorstatus" class="pure-menu-link">Sensoric</a>
                 </li>
             </ul>
         </div>
@@ -84,7 +88,7 @@
     }
 
     //get results from database
-    $result = mysqli_query($connection, "SELECT ID, Humidity, Temperature, Windchill, Pressure, DateTime, Altitude  from measuring_result ORDER BY DateTime DESC LIMIT 1;");
+    $result = mysqli_query($connection, "SELECT ID, Humidity, Temperature, Windchill, Pressure, DateTime, Altitude, Spectrum  from measuring_result ORDER BY DateTime DESC LIMIT 1;");
     $all_property = array();  //declare an array for saving property
 
     $row = mysqli_fetch_array($result);
@@ -95,102 +99,108 @@
     $windchill = $row['Windchill'];
     $time = $row['DateTime'];
     $alt = $row['Altitude'];
+    $spec = $row['Spectrum']
     //showing property
     ?>
+
+
     <div id="main">
         <div class="header">
-            <h1>Storm Pi</h1>
-            <h2>An all in One weather solution</h2>
+            <div id="headertext">
+                <h1>STORM PI</h1>
+                <h2>An All-in-One weather solution</h2>
+            </div>
         </div>
 
-        <div class="pure-g weathercard">
+        <div class="pure-g weathercard" id="welcome-slide">
+
             <div class="pure-u-1 weatherbox1">
-
-                <div class="row">
+                <div class="row animate fadeIn" id="locationrow">
                     <h3 id="location">Location</h3>
-                    <span class="simple-svg icon:raphael-location icon-inline:false">::before</span>
+                    <!--                    <span class="simple-svg icon:raphael-location icon-inline:false">::before</span>-->
                 </div>
+                <hr>
             </div>
-
-            <div class="pure-u-2-3 weatherbox2">
-                <div class="row">
+            <div class="pure-u-md-2-3 pure-u-1 weatherbox2">
+                <div class="row temp">
                     <h1 id="temp"><?php echo $temp . " "; ?></h1>
                     <span class="simple-svg icon:wi-celsius icon-inline:false">::before</span>
                     <span class="simple-svg icon:wi-thermometer icon-inline:false">::before</span>
                 </div>
-            </div>
-            <div class="pure-u-1-3 weatherbox3">
                 <div class="row">
-                    <div id='weather-icon'></div>
+                    <h5 class="chill"><?php echo "feels like " . $windchill . " "; ?></h5>
+                    <span class="simple-svg icon:wi-celsius icon-inline:false" id="smaller">::before</span>
+                </div>
+            </div>
+
+            <div class="pure-u-md-1-3 pure-u-1 weatherbox3">
+                <div class="row flex-start animate fadeIn">
                     <p id="weather-type">Weather type</p>
+                    <div id='weather-icon'></div>
                 </div>
-                <div class="row">
-                    <p id="humidity"><?php echo $humidity . " "; ?></p>
-                    <span class="simple-svg icon:wi-humidity icon-inline:false">::before</span>
+
+                <div class="pure-u-1 rowcombo weatherbox4">
+                    <div class="row flex-start">
+                        <p id="humidity"><?php echo $humidity . " "; ?></p>
+                        <span class="simple-svg icon:wi-humidity icon-inline:false">::before</span>
+                    </div>
+                    <div class="row flex-start">
+                        <p id="pressure"><?php echo $press . " "; ?></p>
+                        <span class="simple-svg icon:wi-barometer icon-inline:false">::before</span>
+                    </div>
                 </div>
-                <div class="row">
-                    <p id="pressure"><?php echo $press . " "; ?></p>
-                    <span class="simple-svg icon:wi-barometer icon-inline:false">::before</span>
+                <div class="pure-u-1 rowcombo weatherbox5">
+                    <div class="row flex-start">
+                        <p id="pressure"><?php echo $alt . " m"; ?></p>
+                        <span class="simple-svg icon:si-glyph:mountain icon-inline:false"></span>
+                    </div>
+                    <div class="row flex-start">
+                        <p id="pressure"><?php echo $spec . " LUX"; ?></p>
+                        <span class="simple-svg icon:mdi-track-light icon-inline:false"></span>
+                    </div>
                 </div>
             </div>
         </div>
-        <hr hidden id="readings">
+
         <div class="content">
-            <div class="chart1">
-                <canvas id="chart1">
-                    <script>
-                        var ctx = document.getElementById("chart1").getContext('2d');
-                        var myLineChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                fill: false
-                            },
-                            options: {
-                                scales: {
-                                    xAxes: [{
-                                        time: {
-                                            unit: 'hour'
-                                        }
-                                    }]
-                                }
-                            }
-                        });
-                    </script>
-                </canvas>
+            <button class="tablink default">Temperature</button>
+            <button class="tablink">Humidity</button>
+
+            <div id="Temperature" class="tabcontent">
+                <div class="container">
+                    <br />
+                    <div class="row1">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <!--       Chart.js Canvas Tag -->
+                            <canvas id="day"></canvas>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
             </div>
 
-            <h1 class="content-subhead">Readings</h1>
-
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore
-                et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                aliquip
-                ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                occaecat
-                cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-            <div class="pure-g">
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <h2 class="content-subhead"> Humidity </h2>
-                    <span class="displaynumber"> <?php echo $humidity; ?> </span>
-                </div>
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <h2 class="content-subhead"> Temperature </h2>
-                    <span class="displaynumber"> <?php echo $temp; ?> </span>
-                </div>
-                <div class="pure-u-1 pure-u-md-1-3">
-                    <h2 class="content-subhead"> Pressure </h2>
-                    <span class="displaynumber"> <?php echo $press; ?>
+            <div id="Humidity" class="tabcontent">
+                <div class="container">
+                    <br />
+                    <div class="row1">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <!--       Chart.js Canvas Tag -->
+                            <canvas id="day2"></canvas>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
                 </div>
             </div>
+
         </div>
+
         <hr id="sensorstatus">
         <div class="content">
-            <h1 class="content-subhead">Sensoren</h1>
+            <h1 class="content-subhead">Sensoric</h1>
             <p>
-                Aktuell verbaute Sensoren
+                Build in Sensors
             </p>
             <h2 class="content-subhead">DHT-22</h2>
             <div class="pure-g">
@@ -275,15 +285,11 @@
         <div class="content">
             <div class="footer">
                 <div class="pure-g">
-                    <div class="pure-u-1">
-                        <div class="pure-g">
-                            <div class="pure-u-1 pure-u-md-1-2">
-                                <a href="#" class="button footerbutton githubButton">Github</a>
-                            </div>
-                            <div class="pure-u-1 pure-u-md-1-2">
-                                <a href="#" class="button footerbutton emailButton">Contact</a>
-                            </div>
-                        </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+                        <a href="https://github.com/projectstormpi" class="button footerbutton githubButton">Github</a>
+                    </div>
+                    <div class="pure-u-1 pure-u-md-1-2">
+                        <a href="#" class="button footerbutton emailButton">Contact</a>
                     </div>
                     <div class="pure-u-1">
                         <p class="legal-copyright">
@@ -297,7 +303,6 @@
 
     </div>
     <script src="js/ui.js"></script>
-
 </body>
 
 </html>
